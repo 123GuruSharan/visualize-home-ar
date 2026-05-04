@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Cube } from "lucide-react";
+import { Box } from "lucide-react";
 import type { Product } from "@/data/products";
 
 interface ProductCardProps {
@@ -43,7 +43,7 @@ const ProductCard = ({ product, onViewAR }: ProductCardProps) => {
           }}
           className="mt-auto inline-flex items-center justify-center gap-2 rounded-full border border-border bg-background px-4 py-2.5 text-sm font-medium text-foreground transition-smooth hover:border-foreground hover:bg-foreground hover:text-background"
         >
-          <Cube className="h-4 w-4" />
+          <Box className="h-4 w-4" />
           View in AR
         </button>
       </div>
