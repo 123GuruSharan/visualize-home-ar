@@ -1,6 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
 import { ShoppingBag, Menu, X } from "lucide-react";
 import { useState } from "react";
+import { useCart } from "@/context/cart";
 
 const links = [
   { to: "/", label: "Home" },
@@ -10,6 +11,7 @@ const links = [
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const { count } = useCart();
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
@@ -40,9 +42,14 @@ const Navbar = () => {
           <Link
             to="/cart"
             aria-label="Cart"
-            className="hidden rounded-full p-2.5 text-foreground transition-smooth hover:bg-muted md:inline-flex"
+            className="relative hidden rounded-full p-2.5 text-foreground transition-smooth hover:bg-muted md:inline-flex"
           >
             <ShoppingBag className="h-5 w-5" />
+            {count > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-foreground px-1 text-[10px] font-semibold text-background">
+                {count}
+              </span>
+            )}
           </Link>
           <button
             onClick={() => setOpen((v) => !v)}
