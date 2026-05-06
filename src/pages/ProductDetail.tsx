@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, Box, ShoppingBag, Truck, ShieldCheck, RotateCcw } from "lucide-react";
+import { ArrowLeft, Box, Loader2, ShoppingBag, Truck, ShieldCheck, RotateCcw } from "lucide-react";
 import Layout from "@/components/Layout";
-import { fetchProduct, type Product } from "@/data/products";
 import { useAR } from "@/context/ar";
+import { useProduct } from "@/hooks/useProducts";
+import { useCart } from "@/context/cart";
+import { toast } from "sonner";
 
 const Detail = ({ label, value }: { label: string; value: string }) => (
   <div className="rounded-xl border border-border bg-card px-4 py-3">
@@ -15,13 +17,11 @@ const Detail = ({ label, value }: { label: string; value: string }) => (
 const ProductDetail = () => {
   const { id = "" } = useParams();
   const { openAR } = useAR();
-  const [product, setProduct] = useState<Product | null | undefined>(undefined);
+  const { add } = useCart();
+  const { data: product, loading, error } = useProduct(id);
+  const [adding, setAdding] = useState(false);
 
-  useEffect(() => {
-    fetchProduct(id).then((p) => setProduct(p ?? null));
-  }, [id]);
-
-  if (product === undefined) {
+  if (loading) {
     return (
       <Layout>
         <div className="container grid min-h-[60vh] place-items-center">
@@ -31,7 +31,7 @@ const ProductDetail = () => {
     );
   }
 
-  if (product === null) {
+  if (error || !product) {
     return (
       <Layout>
         <div className="container py-24 text-center">
@@ -41,6 +41,18 @@ const ProductDetail = () => {
       </Layout>
     );
   }
+
+  const handleAdd = async () => {
+    setAdding(true);
+    try {
+      await add(product, 1);
+      toast.success(`${product.name} added to cart`);
+    } catch {
+      toast.error("Could not add to cart");
+    } finally {
+      setAdding(false);
+    }
+  };
 
   const { dimensions: d } = product;
 
@@ -85,8 +97,13 @@ const ProductDetail = () => {
               >
                 <Box className="h-4 w-4" /> View in AR
               </button>
-              <button className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-border bg-background px-6 py-4 text-sm font-medium text-foreground transition-smooth hover:border-foreground">
-                <ShoppingBag className="h-4 w-4" /> Add to cart
+              <button
+                onClick={handleAdd}
+                disabled={adding}
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-border bg-background px-6 py-4 text-sm font-medium text-foreground transition-smooth hover:border-foreground disabled:opacity-60"
+              >
+                {adding ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShoppingBag className="h-4 w-4" />}
+                Add to cart
               </button>
             </div>
 
