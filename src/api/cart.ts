@@ -17,9 +17,9 @@ export function getCart(): Promise<CartSummary> {
   return apiFetch<CartSummary>(`/cart?session=${getSessionId()}`);
 }
 
-/** POST /api/cart */
+/** POST /api/cart/add */
 export function addToCart(productId: string, quantity = 1) {
-  return apiFetch(`/cart`, {
+  return apiFetch(`/cart/add`, {
     method: "POST",
     body: { session_id: getSessionId(), product_id: productId, quantity },
   });
@@ -33,7 +33,7 @@ export function updateCartItem(itemId: number | string, quantity: number) {
   });
 }
 
-/** DELETE /api/cart/{id} */
+/** DELETE /api/cart/remove/{id} */
 export function removeCartItem(itemId: number | string) {
-  return apiFetch(`/cart/${itemId}`, { method: "DELETE" });
+  return apiFetch(`/cart/remove/${itemId}`, { method: "DELETE" });
 }
