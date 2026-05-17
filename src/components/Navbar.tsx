@@ -1,7 +1,9 @@
-import { Link, NavLink } from "react-router-dom";
-import { ShoppingBag, Menu, X } from "lucide-react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { ShoppingBag, Menu, X, LogOut, User as UserIcon } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/context/cart";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 const links = [
   { to: "/", label: "Home" },
@@ -12,6 +14,14 @@ const links = [
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const { count } = useCart();
+  const { user, logout, loading } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    toast.success("Logged out");
+    navigate("/");
+  };
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
