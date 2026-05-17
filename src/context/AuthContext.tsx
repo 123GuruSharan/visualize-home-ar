@@ -1,17 +1,7 @@
-import { createContext, useCallback, useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import * as authApi from "@/api/auth";
-import type { AuthUser, LoginPayload, RegisterPayload } from "@/api/auth";
-
-export interface AuthContextValue {
-  user: AuthUser | null;
-  loading: boolean;
-  login: (payload: LoginPayload) => Promise<void>;
-  register: (payload: RegisterPayload) => Promise<void>;
-  logout: () => Promise<void>;
-  refresh: () => Promise<void>;
-}
-
-export const AuthContext = createContext<AuthContextValue | null>(null);
+import type { LoginPayload, RegisterPayload, AuthUser } from "@/api/auth";
+import { AuthContext } from "./auth-context";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -21,6 +11,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setLoading(true);
     try {
       setUser(await authApi.getCurrentUser());
+    } catch {
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -31,13 +23,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [refresh]);
 
   const login = useCallback(async (payload: LoginPayload) => {
-    const u = await authApi.login(payload);
-    setUser(u);
+    setUser(await authApi.login(payload));
   }, []);
 
   const register = useCallback(async (payload: RegisterPayload) => {
-    const u = await authApi.register(payload);
-    setUser(u);
+    setUser(await authApi.register(payload));
   }, []);
 
   const logout = useCallback(async () => {
