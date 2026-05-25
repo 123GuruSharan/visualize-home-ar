@@ -1,32 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Product } from "@/data/products";
 import { X, Loader2, Smartphone, AlertTriangle, RotateCw } from "lucide-react";
-
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace JSX {
-    interface IntrinsicElements {
-      "model-viewer": React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
-          src?: string;
-          "ios-src"?: string;
-          alt?: string;
-          ar?: boolean;
-          "ar-modes"?: string;
-          "camera-controls"?: boolean;
-          "auto-rotate"?: boolean;
-          "shadow-intensity"?: string;
-          "environment-image"?: string;
-          exposure?: string;
-          poster?: string;
-          loading?: string;
-          reveal?: string;
-        },
-        HTMLElement
-      >;
-    }
-  }
-}
+// JSX types for <model-viewer> live in src/model-viewer.d.ts
 
 interface ARViewerProps {
   product: Product | null;
